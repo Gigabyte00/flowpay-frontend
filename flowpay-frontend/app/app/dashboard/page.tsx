@@ -13,7 +13,9 @@ export default function DashboardPage() {
       try {
         const response = await apiClient.getDashboardStats()
         if (response.success) {
-          setStats(response.data.stats)
+          // Type assertion to fix TypeScript error on response.data
+          const data = response.data as { stats: any }
+          setStats(data.stats)
         }
       } catch (error) {
         console.error('Error fetching stats:', error)
