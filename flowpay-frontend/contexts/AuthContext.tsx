@@ -57,7 +57,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.getUserProfile()
       if (response.success) {
-        setProfile(response.data.user)
+        // Type assertion to fix TypeScript error on response.data
+        const data = response.data as { user: any }
+        setProfile(data.user)
       }
     } catch (error) {
       console.error('Error fetching profile:', error)
