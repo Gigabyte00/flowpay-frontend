@@ -42,8 +42,9 @@ export default function PaymentsPage() {
       const response = await apiClient.getVendors()
       if (response.success) {
  if (response.data && response.data.vendors) {
- const onboardedVendors = response.data.vendors.filter((v: Vendor) => v.onboarded);
- setVendors(onboardedVendors);
+ const onboardedVendors = response.data.vendors.filter((v: Vendor) => v.onboarded)
+ setVendors(onboardedVendors)
+ }
       }
     } catch (error) {
       toast.error('Error loading vendors')
