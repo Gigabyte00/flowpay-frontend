@@ -47,8 +47,12 @@ export default function TransactionsPage() {
 
       const response = await apiClient.getTransactions(params)
       if (response.success) {
-        setTransactions(response.data.transactions || [])
-        setTotalPages(response.data.pagination?.pages || 1)
+        if (response.data && response.data.transactions) {
+ setTransactions(response.data.transactions || []);
+        }
+        if (response.data && response.data.pagination) {
+ setTotalPages(response.data.pagination?.pages || 1);
+        }
       } else {
         toast.error('Failed to fetch transactions')
       }

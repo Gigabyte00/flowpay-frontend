@@ -33,7 +33,7 @@ export default function VendorsPage() {
     try {
       const response = await apiClient.getVendors()
       if (response.success) {
-        setVendors(response.data.vendors || [])
+ if (response.data && response.data.vendors) { setVendors(response.data.vendors || []); }
       } else {
         toast.error('Failed to fetch vendors')
       }

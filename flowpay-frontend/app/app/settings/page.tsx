@@ -32,7 +32,7 @@ export default function SettingsPage() {
         toast.success('Profile updated successfully')
         await refreshProfile()
       } else {
-        toast.error(response.error || 'Failed to update profile')
+        toast.error(response.error?.toString() || 'Failed to update profile')
       }
     } catch (error) {
       toast.error('Error updating profile')
