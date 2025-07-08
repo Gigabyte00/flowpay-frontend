@@ -1,23 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { apiClient } from '@/lib/api'
+import { apiClient, Vendor } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import VendorModal from '@/components/modals/VendorModal'
 import toast from 'react-hot-toast'
 import { Users, Plus, Search, ExternalLink, CheckCircle, Clock, AlertCircle } from 'lucide-react'
-
-interface Vendor {
-  id: string
-  name: string
-  email: string
-  type: string
-  stripe_account_id: string
-  onboarded: boolean
-  last_payment: string
-  total_amount: number
-  created_at: string
-}
 
 export default function VendorsPage() {
   const [vendors, setVendors] = useState<Vendor[]>([])
@@ -32,8 +20,8 @@ export default function VendorsPage() {
   const fetchVendors = async () => {
     try {
       const response = await apiClient.getVendors()
-      if (response.success) {
- if (response.data && response.data.vendors) { setVendors(response.data.vendors || []); }
+      if (response.success && response.data && Array.isArray(response.data.vendors)) {
+        setVendors(response.data.vendors)
       } else {
         toast.error('Failed to fetch vendors')
       }

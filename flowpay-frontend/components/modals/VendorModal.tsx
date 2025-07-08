@@ -33,20 +33,22 @@ export default function VendorModal({ isOpen, onClose, onVendorCreated }: Vendor
 
     try {
       const response = await apiClient.createVendor(formData)
-      
-      if (response.success) {
-        onVendorCreated(response.data.vendor)
-        
+      if (response.success && response.data) {
+        // Defensive: check for vendor and onboardingUrl
+        const vendor = (response.data as any).vendor
+        const onboardingUrl = (response.data as any).onboardingUrl
+        if (vendor) {
+          onVendorCreated(vendor)
+        }
         // Open onboarding URL if provided
-        if (response.data.onboardingUrl) {
+        if (onboardingUrl) {
           const shouldOpen = window.confirm(
             'Vendor created! The vendor needs to complete Stripe onboarding. Open onboarding page now?'
           )
           if (shouldOpen) {
-            window.open(response.data.onboardingUrl, '_blank')
+            window.open(onboardingUrl, '_blank')
           }
         }
-        
         // Reset form
         setFormData({
           name: '',

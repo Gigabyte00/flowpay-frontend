@@ -1,29 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { apiClient } from '@/lib/api'
+import { apiClient, Transaction } from '@/lib/api'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import { Search, Filter, Download, ExternalLink, CheckCircle, Clock, XCircle, AlertTriangle } from 'lucide-react'
-
-interface Transaction {
-  id: string
-  date: string
-  merchant: string
-  amount: number
-  fee: number
-  status: 'Pending' | 'Processing' | 'Completed' | 'Failed' | 'Cancelled'
-  method: string
-  stripe_payment_id: string
-  stripe_transfer_id?: string
-  description?: string
-  vendors?: {
-    id: string
-    name: string
-    type: string
-  }
-}
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -46,13 +28,8 @@ export default function TransactionsPage() {
       if (statusFilter) params.status = statusFilter
 
       const response = await apiClient.getTransactions(params)
-      if (response.success) {
-        if (response.data && response.data.transactions) {
- setTransactions(response.data.transactions || []);
-        }
-        if (response.data && response.data.pagination) {
- setTotalPages(response.data.pagination?.pages || 1);
-        }
+      if (response.success && response.data && Array.isArray(response.data.transactions)) {
+        setTransactions(response.data.transactions)
       } else {
         toast.error('Failed to fetch transactions')
       }

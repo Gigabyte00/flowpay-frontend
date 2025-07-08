@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { apiClient } from '@/lib/api'
+import { apiClient, Vendor } from '@/lib/api'
 import { getStripe } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,14 +9,6 @@ import PaymentForm from '@/components/forms/PaymentForm'
 import toast from 'react-hot-toast'
 import { CreditCard, Banknote, Zap, Check, AlertCircle, ArrowRight } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
-
-interface Vendor {
-  id: string
-  name: string
-  email: string
-  type: string
-  onboarded: boolean
-}
 
 export default function PaymentsPage() {
   const [vendors, setVendors] = useState<Vendor[]>([])
@@ -40,11 +32,9 @@ export default function PaymentsPage() {
   const fetchVendors = async () => {
     try {
       const response = await apiClient.getVendors()
-      if (response.success) {
- if (response.data && response.data.vendors) {
- const onboardedVendors = response.data.vendors.filter((v: Vendor) => v.onboarded)
- setVendors(onboardedVendors)
- }
+      if (response.success && response.data && Array.isArray(response.data.vendors)) {
+        const onboardedVendors = response.data.vendors.filter((v) => v && v.onboarded)
+        setVendors(onboardedVendors)
       }
     } catch (error) {
       toast.error('Error loading vendors')

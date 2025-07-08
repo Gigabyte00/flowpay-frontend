@@ -14,10 +14,32 @@ export interface DashboardStats {
   }
 }
 export interface Vendor {
-  // Define vendor fields
+  id: string
+  name: string
+  email: string
+  type: string
+  onboarded: boolean
+  stripe_account_id: string
+  last_payment: string
+  total_amount: number
+  created_at: string
 }
 export interface Transaction {
-  // Define transaction fields
+  id: string
+  date: string
+  merchant: string
+  amount: number
+  fee: number
+  status: 'Pending' | 'Processing' | 'Completed' | 'Failed' | 'Cancelled'
+  method: string
+  stripe_payment_id: string
+  stripe_transfer_id?: string
+  description?: string
+  vendors?: {
+    id: string
+    name: string
+    type: string
+  }
 }
 
 interface ApiResponse<T> {
@@ -66,6 +88,13 @@ class ApiClient {
   // User methods
   async getUserProfile(): Promise<ApiResponse<UserProfile>> {
     return this.request<UserProfile>('/users/profile')
+  }
+
+  async updateUserProfile(data: any): Promise<ApiResponse<any>> {
+    return this.request<any>('/users/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    })
   }
 
   async getDashboardStats(): Promise<ApiResponse<DashboardStats>> {
